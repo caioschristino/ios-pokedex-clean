@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ProtocolOutput {
+protocol ProtocolOutput  {
     associatedtype V
     
     var value: V? { get set }
@@ -47,5 +47,4 @@ class Output<V> : ProtocolOutput {
         self.value = value
         self.error = error
     }
-
 }

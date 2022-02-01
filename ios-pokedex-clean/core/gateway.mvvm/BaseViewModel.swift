@@ -18,7 +18,6 @@ protocol BaseViewModelProtocol : ViewModel {
     func dispatchUseCase<P, R>(param: P?, useCase: UseCase<P, R>, listener: (_ output:Output<R>) -> Void) -> DispatchWorkItem?
 }
 
-
 class BaseViewModel {
     var channels = [String: [NotificationCenter]]()
     
@@ -42,7 +41,7 @@ class BaseViewModel {
         })
     }
 
-    func dispatchUseCase<P, R>(
+    func dispatchUseCase<P, R: NSObject>(
         param: P?,
         useCase: UseCase<P, R>,
         listener: @escaping (Output<R>) -> Void

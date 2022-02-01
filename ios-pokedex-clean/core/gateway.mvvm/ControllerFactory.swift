@@ -7,6 +7,6 @@
 
 import Foundation
 
-class ControllerFactory<V, T> : Controller {
+class ControllerFactory<V, T> : Controller {    
     func create(context: V)-> T? { return nil }
 }

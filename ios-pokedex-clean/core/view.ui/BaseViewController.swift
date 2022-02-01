@@ -14,41 +14,45 @@ protocol BaseSceneProtocol {
 
     func channelName() -> String
 
-    func setupController() -> Controller?
+    func setupController() -> C
 
     func getLayout() -> Int
 }
 
-class BaseViewController: UIViewController, BaseSceneProtocol {
-    typealias C = Controller
-        
+class BaseViewController<C> : UIViewController, BaseSceneProtocol {
+    typealias C = C
+    
+    lazy var controller = { setupController() }()
+    
     func setupViews(view: UIView?) { }
 
     func channelName() -> String { return "" }
-
-    func setupController() -> Controller? { return nil }
 
     func getLayout() -> Int { return 0 }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        controller = setupController() as? LandingController
         observe(channelName: channelName(), listener: NotificationCenter.init())
-        
         setupViews(view: self.view)
+    }
+    
+    func setupController() -> C {
+        return C.self as! C
     }
 
     private func observe(channelName: String, listener: NotificationCenter) {
-        controller?.observe(channelName: channelName, listener: listener)
+        let cnt = controller as! Controller
+        cnt.observe(channelName: channelName, listener: listener)
     
         listener.addObserver(self, selector: #selector(self.methodOfReceivedNotification(notification:)), name: Notification.Name(channelName), object: nil)
     }
     
     @objc func methodOfReceivedNotification(notification: Notification) {
-        handleResponse(state: notification.object as! ValueOutput<Landing>)
+        let state = notification.object as! ValueOutput<NSObject>
+        handleResponse(state: state)
     }
     
-    private func handleResponse(state: ValueOutput<Landing>) {
+    private func handleResponse(state: ValueOutput<NSObject>) {
           if (state.isError()) {
               handleThrowable(error: state.error)
           } else {
@@ -74,6 +78,4 @@ class BaseViewController: UIViewController, BaseSceneProtocol {
     func handleError(error: Any?) {}
 
     func handleSuccess(value: Any?) {}
-
-    var controller: LandingController?
 }

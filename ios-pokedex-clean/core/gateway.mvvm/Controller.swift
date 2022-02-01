@@ -6,8 +6,8 @@
 //
 
 import Foundation
-
-protocol Controller {
+//
+protocol Controller  {
     func observe(channelName: String, listener: NotificationCenter)
 }
 

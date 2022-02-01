@@ -7,11 +7,11 @@
 
 import UIKit
 
-class ViewController: BaseViewController {
+class ViewController: BaseViewController<LandingController> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        controller?.doFetch(channelName: channelName())
+        controller.doFetch(channelName: channelName())
     }
     
     override func setupViews(view: UIView?) {
@@ -22,11 +22,12 @@ class ViewController: BaseViewController {
     override func channelName() -> String {
         "LandingViewController"
     }
+
     
-    
-    override func setupController() -> Controller? {
-        let injector =  LandingViewInjector.injector?.controllerFactory.create(context: self)
-        
+    override func setupController() -> LandingController {
+        let injector =  LandingViewInjector.injector!
+                .controllerFactory.create(context: self)!
+
         return injector
     }
 }

@@ -10,3 +10,4 @@ import Foundation
 protocol LandingController : Controller {
     func doFetch(channelName: String)
 }
+

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Landing {
+class Landing : NSObject {
     var count: Int
     var next: String
     var results: [Pokemon]
