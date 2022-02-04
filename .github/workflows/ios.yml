@@ -1,20 +1,28 @@
-name: Testing
+name: StyleOn_Workflow
 
-on:
-  pull_request:
-    branches:
-    - main
-    
+on: [push]
+
 jobs:
-  test:
-    name: Testing Swift Package and iOS app
+  build:
+
     runs-on: macOS-latest
+    strategy:
+      matrix:
+        destination: ['platform=iOS Simulator,OS=12.4,name=iPhone 11 Pro Max']
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v1
-      - name: Force XCode 11.3
-        run: sudo xcode-select -switch /Applications/Xcode_11.3.app
-      - name: Testing Swift package
-        run: exec ./.github/scripts/test_swift_package.sh
-      - name: Testing iOS app
-        run: exec ./.github/scripts/test_app.sh
+    - uses: actions/checkout@master
+    - name: Build
+      run: swift build -v
+
+  test:
+      name: Test
+      runs-on: macOS-latest
+      strategy:
+          matrix:
+            destination: ['platform=iOS Simulator,OS=12.4,name=iPhone 11 Pro Max']
+      steps:
+        - name: Checkout
+          uses: actions/checkout@master
+        - name: Run tests
+          run: swift test -v
