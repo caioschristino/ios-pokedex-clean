@@ -7,36 +7,26 @@ on:
     - feature/*
 
 jobs:
-  test:
-    # Job name is Test
-    name: Test
-    # This job runs on macOS
+  build:
+    name: Build Project
     runs-on: macOS-latest
-    strategy:
-      matrix:
-        destination: ['platform=iOS Simulator,OS=13.1,name=iPhone 8']
-        xcode: ['/Applications/Xcode_11.1.app/Contents/Developer']
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Bundle Install
-        run: bundle install
-        env:
-          BUNDLE_GITHUB__COM: x-access-token:${{ secrets.GITHUB_PERSONAL_ACCESS_TOKEN }}
-      - name: Dependencies
-        run: |
-          carthage bootstrap --no-use-binaries --platform iOS --cache-builds
-          bundle exec pod install
-        env:
-          DEVELOPER_DIR: ${{ matrix.xcode }}
-      - name: Build and test
-        run: bundle exec fastlane scan --destination "${destination}" --scheme "YOUR_APP_SCHEME"
-        env:
-          destination: ${{ matrix.destination }}
-          DEVELOPER_DIR: ${{ matrix.xcode }}
-      - name: Archive Failed Tests artifacts
-        if: failure()
-        uses: actions/upload-artifact@v1
-        with:
-          name: FailureDiff
-          path: YouAppTests/FailureDiffs
+    - name: Checkout repository
+      uses: actions/checkout@v1
+
+    - name: Set Gems
+      run: |
+        gem install bundler
+        bundle install
+    - name: Set Xcode version
+      uses: maxim-lobanov/setup-xcode@v1.1
+      with:
+        xcode-version: 12.1
+
+    - name: Build
+      run: |
+        set -o pipefail
+        xcodebuild build \
+        -scheme iOSGitHubActions \
+        -destination 'platform=iOS Simulator,name=iPhone 11 Pro' \
+        | xcpretty
